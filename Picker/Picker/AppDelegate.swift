@@ -43,6 +43,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
 }
+enum OpenCloseStyle {
+    case Open24Hour;
+    case Close24Hour;
+    case OpenSelected;
+}
 class WeekOpenClose: NSObject{
     var dayName     : String;
     var openTime    : String;
@@ -54,6 +59,47 @@ class WeekOpenClose: NSObject{
         self.openTime   =   openTime;
         self.closeTime  =   closedTime;
         self.isClosed   =   isClosed;
+    }
+    func isCloseNextDay()->Bool{
+        if self.isClosed{
+            return false
+        }
+        else{
+            let openTime = Float(self.openTime.components(separatedBy: CharacterSet.decimalDigits.inverted).joined(separator: "."))!
+            let closeTime = Float(self.closeTime.components(separatedBy: CharacterSet.decimalDigits.inverted).joined(separator: "."))!
+            
+            if openTime == closeTime {
+                if closeTime > 0{
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            }
+            else if openTime > closeTime {
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+    }
+    func openCloseStyle()->OpenCloseStyle{
+        if self.openTime == self.closeTime{
+            return self.isClosed ? OpenCloseStyle.Close24Hour : OpenCloseStyle.Open24Hour;
+        }
+        else{
+            return OpenCloseStyle.OpenSelected;
+        }
+    }
+}
+class OpenSlot: NSObject{
+    var openTime     : Date;
+    var closeTime    : Date;
+    
+    init(openTime : Date, closedTime : Date) {
+        self.openTime   =   openTime;
+        self.closeTime  =   closedTime;
     }
 }
 extension UIView{

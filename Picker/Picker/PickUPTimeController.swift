@@ -38,8 +38,13 @@ class PickUPTimeController: UIViewController {
         self.calculateSlot();
     }
     private func loadWeekDate(){
+//        let Sunday      = WeekOpenClose(dayName: "Sunday",      openTime: "00:00", closedTime: "00:00", isClosed: false)//24 Hours Open + Close same day
+//        let Monday      = WeekOpenClose(dayName: "Monday",      openTime: "02:15", closedTime: "02:15", isClosed: true)//24 Hours Closed
+//        let Tuesday     = WeekOpenClose(dayName: "Tuesday",     openTime: "08:00", closedTime: "06:00", isClosed: false)//Selected Time
+//        let Wednesday   = WeekOpenClose(dayName: "Wednesday",   openTime: "06:00", closedTime: "06:00", isClosed: false)//24 Hours Open + Close next day
+        
         let Sunday      = WeekOpenClose(dayName: "Sunday",      openTime: "00:00", closedTime: "02:00", isClosed: false)
-        let Monday      = WeekOpenClose(dayName: "Monday",      openTime: "02:00", closedTime: "04:00", isClosed: false)
+        let Monday      = WeekOpenClose(dayName: "Monday",      openTime: "02:15", closedTime: "04:45", isClosed: false)
         let Tuesday     = WeekOpenClose(dayName: "Tuesday",     openTime: "04:00", closedTime: "06:00", isClosed: false)
         let Wednesday   = WeekOpenClose(dayName: "Wednesday",   openTime: "06:00", closedTime: "08:00", isClosed: false)
         let Thursday    = WeekOpenClose(dayName: "Thursday",    openTime: "08:00", closedTime: "10:00", isClosed: false)
@@ -57,6 +62,19 @@ class PickUPTimeController: UIViewController {
         self.view.viewWithTag(1001)?.dropShadowForCell(shadowRadius: 30.0)
     }
     private func calculateSlot() {
+        var roundedTime     =   self.shopTime;//Will do round it
+        var todayNumber     =   Calendar.current.component(.weekday, from: roundedTime)//Week start by Sunday
+        
+        //check business close on next day. (eg. open : 11:00 PM close : 11:00 AM)
+        let prevNumber      =   (todayNumber==1) ? 7 : (todayNumber-1);
+        let prevOpen        =   self.weekTime[prevNumber-1]
+        if prevOpen.isCloseNextDay(){
+            todayNumber = prevNumber;//Change index to posible first slot time
+        }
+        //check business close time today eg. open : 11:00 PM close : 11:00 AM
+        
+        
+        
         
     }
     override func didReceiveMemoryWarning() {
